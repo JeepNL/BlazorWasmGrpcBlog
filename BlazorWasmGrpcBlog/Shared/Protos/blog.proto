@@ -1,0 +1,55 @@
+﻿syntax = "proto3";
+option csharp_namespace = "BlazorWasmGrpcBlog.Shared.Protos";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+package blogproto;
+
+service BlogProto{
+	rpc GetPosts(google.protobuf.Empty) returns (Posts);
+	rpc GetAuthors(google.protobuf.Empty) returns (Authors);
+	rpc GetPost(GetPostQuery) returns (Post);
+	rpc GetAuthor(GetAuthorQuery) returns (Author);
+}
+
+message Author {
+	int32 author_id = 1;
+	string name = 2;
+	string created = 3; // DateTime String
+}
+message Authors {
+	repeated Author author_list = 1;
+}
+
+enum BlogStatus {
+    HIDDEN = 0;
+    PUBLISHED = 1;
+}
+
+message Post {
+	int32 post_id = 1;
+	int32 author_id = 2;
+	string title = 3;
+	string content = 4;
+	google.protobuf.Timestamp date = 5; // DateTime Timestamp
+	BlogStatus status = 6;
+	repeated Tag tags = 7; // Post with many Tags
+}
+message Posts {
+	repeated Post post_list = 1;
+}
+
+message Tag {
+	string tag_id = 1;
+	repeated Post posts = 2; // Tag with many Posts
+}
+message Tags {
+	repeated Tag tag_list = 1;
+}
+
+message GetPostQuery {
+	int32 post_id = 1;
+}
+
+message GetAuthorQuery {
+	int32 author_id = 1;
+}

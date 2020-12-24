@@ -1,0 +1,33 @@
+﻿@page "/"
+@using Grpc.Net.Client
+@using Google.Protobuf.WellKnownTypes;
+@using Grpc.Core
+@using BlazorWasmGrpcBlog.Shared.Protos
+@using BlazorWasmGrpcBlog.Shared
+@using Microsoft.Extensions.Configuration
+@inject GrpcChannel Channel
+
+<h1>Blog Posts</h1>
+
+@if (postLst == null)
+{
+    <p>Loading ...</p>
+}
+else
+{
+    @foreach (var post in postLst)
+    {
+        <p>@post.Title</p>
+    }
+}
+
+@code {
+    private BlogProto.BlogProtoClient client;
+    private IList<Post> postLst;
+
+    protected override async Task OnInitializedAsync()
+    {
+        client = new BlogProto.BlogProtoClient(Channel);
+        postLst = (await client.GetPostsAsync(new Empty())).PostList.ToList();
+    }
+}
