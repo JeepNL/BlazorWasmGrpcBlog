@@ -1,4 +1,4 @@
-# Blazor Wasm Grpc Blog Sample
+# Blazor Wasm gRPC Blog Sample
 
 ### 🛠 Under Construction
 
