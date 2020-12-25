@@ -24,7 +24,7 @@ namespace BlazorWasmGrpcBlog.Server.Services
 			var posts = new Posts();
 			var allPosts = await dbContext.Posts
 				.ToListAsync();
-			posts.PostList.AddRange(allPosts);
+			posts.PostsData.AddRange(allPosts);
 			return posts;
 		}
 	}

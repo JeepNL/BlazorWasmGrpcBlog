@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorWasmGrpcBlog.Server.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201224120813_InitialCreate")]
+    [Migration("20201225133358_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -97,26 +97,6 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                     b.HasKey("AuthorId");
 
                     b.ToTable("Authors");
-
-                    b.HasData(
-                        new
-                        {
-                            AuthorId = 1,
-                            Created = "",
-                            Name = "First Author"
-                        },
-                        new
-                        {
-                            AuthorId = 2,
-                            Created = "",
-                            Name = "Second Author"
-                        },
-                        new
-                        {
-                            AuthorId = 3,
-                            Created = "",
-                            Name = "Third Author"
-                        });
                 });
 
             modelBuilder.Entity("BlazorWasmGrpcBlog.Shared.Protos.Post", b =>
@@ -128,47 +108,23 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                     b.Property<int>("AuthorId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("BlogStatus")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Content")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Date")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Title")
                         .HasColumnType("TEXT");
 
                     b.HasKey("PostId");
 
-                    b.ToTable("Posts");
+                    b.HasIndex("AuthorId");
 
-                    b.HasData(
-                        new
-                        {
-                            PostId = 1,
-                            AuthorId = 1,
-                            Content = "",
-                            Status = 0,
-                            Title = "First Post"
-                        },
-                        new
-                        {
-                            PostId = 2,
-                            AuthorId = 2,
-                            Content = "",
-                            Status = 0,
-                            Title = "Second Post"
-                        },
-                        new
-                        {
-                            PostId = 3,
-                            AuthorId = 3,
-                            Content = "",
-                            Status = 0,
-                            Title = "Third Post"
-                        });
+                    b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("BlazorWasmGrpcBlog.Shared.Protos.Tag", b =>
@@ -179,20 +135,6 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                     b.HasKey("TagId");
 
                     b.ToTable("Tags");
-
-                    b.HasData(
-                        new
-                        {
-                            TagId = "Tag1"
-                        },
-                        new
-                        {
-                            TagId = "Tag2"
-                        },
-                        new
-                        {
-                            TagId = "Tag3"
-                        });
                 });
 
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.DeviceFlowCodes", b =>
@@ -443,6 +385,17 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                     b.HasIndex("TagsTagId");
 
                     b.ToTable("PostTag");
+                });
+
+            modelBuilder.Entity("BlazorWasmGrpcBlog.Shared.Protos.Post", b =>
+                {
+                    b.HasOne("BlazorWasmGrpcBlog.Shared.Protos.Author", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

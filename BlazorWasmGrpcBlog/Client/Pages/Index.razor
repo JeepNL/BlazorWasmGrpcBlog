@@ -28,6 +28,6 @@ else
     protected override async Task OnInitializedAsync()
     {
         client = new BlogProto.BlogProtoClient(Channel);
-        postLst = (await client.GetPostsAsync(new Empty())).PostList.ToList();
+        postLst = (await client.GetPostsAsync(new Empty())).PostsData.ToList();
     }
 }
