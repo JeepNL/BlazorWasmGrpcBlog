@@ -22,8 +22,8 @@ message Authors {
 }
 
 enum PostStatus {
-    HIDDEN = 0; // Default, must be 0.
-    PUBLISHED = 1;
+	HIDDEN = 0; // Default, must be 0.
+	PUBLISHED = 1;
 	DELETED = 2;
 }
 

@@ -40,10 +40,10 @@ namespace BlazorWasmGrpcBlog.Server.Data
 			base.OnModelCreating(modelBuilder);
 
 			var tsConverter = new ValueConverter<Google.Protobuf.WellKnownTypes.Timestamp, string>(
-				 v => v.ToDateTimeOffset().ToString("yyyy-MM-dd HH:mm:ss"),
-				 v => Google.Protobuf.WellKnownTypes.Timestamp.FromDateTimeOffset(DateTimeOffset.UtcNow)
+				 v => v == null ? null : v.ToDateTimeOffset().ToString("yyyy-MM-dd HH:mm:ss zzz"), // To DB
+				 v => v == null ? null : Google.Protobuf.WellKnownTypes.Timestamp
+					.FromDateTimeOffset(DateTime.ParseExact(v, "yyyy-MM-dd HH:mm:ss zzz", System.Globalization.CultureInfo.InvariantCulture)) // From DB
 			);
-
 			modelBuilder.Entity<PostExtended>().Property(e => e.Ts).HasConversion(tsConverter);
 
 			modelBuilder.Entity<PostExtended>()

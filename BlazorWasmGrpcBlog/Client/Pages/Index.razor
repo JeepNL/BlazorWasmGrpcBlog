@@ -17,7 +17,7 @@ else
 {
     foreach (var post in postsLst)
     {
-        <p>@ToLocalDate(post.DateCreated) - @post.Title by @post.Author.Name - (@post.PostExtended.Ts)</p>
+        <p>@ToLocalDate(post.DateCreated) - @post.Title by @post.Author.Name - @FromTimeStamp(post.PostExtended.Ts) (UTC)</p>
     }
 }
 
@@ -29,14 +29,20 @@ else
     protected override async Task OnInitializedAsync()
     {
         // TODO, get culture info from browser via JSInterop.
-        cultureInfo = new System.Globalization.CultureInfo("en-US");
+        // cultureInfo = new System.Globalization.CultureInfo("en-US");
         client = new BlogProto.BlogProtoClient(Channel);
         postsLst = (await client.GetPostsAsync(new Empty())).PostsData.ToList();
     }
 
     private string ToLocalDate(string dbUtcDate)
     {
-        string localDate = DateTime.ParseExact(dbUtcDate, "yyyy-MM-dd HH:mm:ss", cultureInfo).ToLocalTime().ToString("yyyy-MM-dd HH:mm");
-        return localDate;
+        return DateTime.ParseExact(dbUtcDate, "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).ToLocalTime().ToString("yyyy-MM-dd HH:mm");
     }
+
+    private string FromTimeStamp(Google.Protobuf.WellKnownTypes.Timestamp dbUtcTs)
+    {
+        return dbUtcTs.ToDateTime().ToString("HH:mm zzz");
+    }
+
+
 }
