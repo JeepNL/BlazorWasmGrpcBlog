@@ -11,6 +11,7 @@ using BlazorWasmGrpcBlog.Server.Models;
 using BlazorWasmGrpcBlog.Shared;
 using BlazorWasmGrpcBlog.Shared.Protos;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlazorWasmGrpcBlog.Server.Data
 {
@@ -24,69 +25,96 @@ namespace BlazorWasmGrpcBlog.Server.Data
 
 		public void BlogSeed()
 		{
+			// ctx.Database.EnsureDeleted();
+			// ctx.Database.EnsureCreated();
+			ctx.Database.Migrate();
+
 			if (ctx.Posts.Any())
 			{
 				return;
 			}
 
+			var utcDate = DateTimeOffset.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
+			var utcTs = DateTimeOffset.UtcNow.ToTimestamp();
+
 			// Seed Authors
 			ctx.Authors.Add(new Author()
 			{
-				AuthorId = 1,
-				Name = "Author I"
+				Id = 1,
+				Name = "Author I",
+				DateCreated = utcDate
 
 			});
 			ctx.Authors.Add(new Author()
 			{
-				AuthorId = 2,
-				Name = "Author II"
-
+				Id = 2,
+				Name = "Author II",
+				DateCreated = utcDate
 			});
 			ctx.Authors.Add(new Author()
 			{
-				AuthorId = 3,
-				Name = "Author III"
-
+				Id = 3,
+				Name = "Author III",
+				DateCreated = utcDate
 			});
 
 			// Seed Tags
 			ctx.Tags.Add(new Tag()
 			{
-				TagId = "TagOne"
+				Id = "TagOne"
 			});
 
 			ctx.Tags.Add(new Tag()
 			{
-				TagId = "TagTwo"
+				Id = "TagTwo"
 			});
 
 			ctx.Tags.Add(new Tag()
 			{
-				TagId = "TagThree"
+				Id = "TagThree"
 			});
 
 			// Seed Posts
 			ctx.Posts.Add(new Post()
 			{
-				PostId = 1,
+				Id = 1,
 				AuthorId = 1,
-				// Author = ctx.Authors.FirstOrDefault(p => p.AuthorId == 1),
 				Title = "First Post",
+				DateCreated = utcDate,
 				BlogStatus = BlogStatus.Published
-			});
+			}); ;
 			ctx.Posts.Add(new Post()
 			{
-				PostId = 2,
+				Id = 2,
 				AuthorId = 2,
 				Title = "Second Post",
+				DateCreated = utcDate,
 				BlogStatus = BlogStatus.Published
 			});
 			ctx.Posts.Add(new Post()
 			{
-				PostId = 3,
+				Id = 3,
 				AuthorId = 3,
 				Title = "Third Post",
+				DateCreated = utcDate,
 				BlogStatus = BlogStatus.Published
+			});
+
+			// Seed Extended info to Posts
+			ctx.PostsExtented.Add(new PostExtended()
+			{
+				PostId = 1,
+				Ts = utcTs
+			}); ;
+			ctx.PostsExtented.Add(new PostExtended()
+			{
+				PostId = 2,
+				Ts = utcTs
+			});
+			ctx.PostsExtented.Add(new PostExtended()
+			{
+				PostId = 3,
+				Ts = utcTs
 			});
 
 			ctx.SaveChanges();

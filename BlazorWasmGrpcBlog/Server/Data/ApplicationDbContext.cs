@@ -1,5 +1,6 @@
 ﻿using BlazorWasmGrpcBlog.Server.Models;
 using BlazorWasmGrpcBlog.Shared.Protos;
+using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +27,7 @@ namespace BlazorWasmGrpcBlog.Server.Data
 		}
 		public DbSet<Author> Authors { get; set; }
 		public DbSet<Post> Posts { get; set; }
+		public DbSet<PostExtended> PostsExtented { get; set; }
 		public DbSet<Tag> Tags { get; set; }
 
 		public override int SaveChanges()
@@ -38,11 +40,18 @@ namespace BlazorWasmGrpcBlog.Server.Data
 			base.OnModelCreating(modelBuilder);
 
 			var tsConverter = new ValueConverter<Google.Protobuf.WellKnownTypes.Timestamp, string>(
-				v => v.ToDateTimeOffset().ToString("yyyy-MM-dd HH:mm:ss"),
-				v => Google.Protobuf.WellKnownTypes.Timestamp.FromDateTimeOffset(DateTimeOffset.UtcNow)
+				 v => v.ToDateTimeOffset().ToString("yyyy-MM-dd HH:mm:ss"),
+				 v => Google.Protobuf.WellKnownTypes.Timestamp.FromDateTimeOffset(DateTimeOffset.UtcNow)
 			);
 
-			modelBuilder.Entity<Post>().Property(e => e.Date).HasConversion(tsConverter);
+			modelBuilder.Entity<PostExtended>().Property(e => e.Ts).HasConversion(tsConverter);
+
+			modelBuilder.Entity<PostExtended>()
+				.HasKey(c => c.PostId);
+
+			modelBuilder.Entity<PostExtended>()
+				.Property(c => c.PostId)
+				.ValueGeneratedNever();
 		}
 	}
 }

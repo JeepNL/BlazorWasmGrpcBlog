@@ -6,15 +6,16 @@ package blogproto;
 
 service BlogProto{
 	rpc GetPosts(google.protobuf.Empty) returns (Posts);
-	rpc GetAuthors(google.protobuf.Empty) returns (Authors);
 	rpc GetPost(GetPostQuery) returns (Post);
+	rpc GetAuthors(google.protobuf.Empty) returns (Authors);
+	rpc GetAuthorPosts(GetAuthorPostsQuery) returns (Posts);
 	rpc GetAuthor(GetAuthorQuery) returns (Author);
 }
 
 message Author {
-	int32 author_id = 1;
+	int32 id = 1;
 	string name = 2;
-	string created = 3; // DateTime String
+	string date_created = 3; // DateTime (UTC)
 }
 message Authors {
 	repeated Author authors_data = 1;
@@ -23,29 +24,38 @@ message Authors {
 enum BlogStatus {
     HIDDEN = 0;
     PUBLISHED = 1;
+	DELETED = 2;
 }
 
-message Post {
-	int32 post_id = 1;
-	Author author = 2; // One to One
-	int32 author_id = 3;
-	string title = 4;
-	string content = 5;
-	google.protobuf.Timestamp date = 6; // DateTime Timestamp
-	BlogStatus blog_status = 7;
-	repeated Tag tags = 8; // Post with many Tags
+message Post { // For Public
+	int32 id = 1;
+	int32 author_id = 2;
+	string title = 3;
+	string content = 4;
+	string date_created = 5; // DateTime (UTC)
+	BlogStatus blog_status = 6; // enum
+	PostExtended post_extended = 7; // one to one
+	Author author = 8; // one to one
+	repeated Tag tags = 9; // Post with many Tags
 }
 message Posts {
 	repeated Post posts_data = 1;
 }
 
+message PostExtended { // Extra Post Info For Moderators/Admins
+	int32 post_id = 1;
+	google.protobuf.Timestamp Ts = 2; // TODO EF Core ValueConverter
+	// etc. etc.
+}
+
 /*
- Because of "message Post" with "repeated Tag tags" _and_ "message Tag" with "repeated Post posts"
- EF Core creates "PostTag" table automagically
+	Because of "message Post" with "repeated Tag tags"
+	and "message Tag" with "repeated Post posts"
+	EF Core creates "PostTag" table 'automagically'.'
 */
 
 message Tag {
-	string tag_id = 1;
+	string id = 1; // Tag itself: string
 	repeated Post posts = 2; // Tag with many Posts
 }
 message Tags {
@@ -57,5 +67,9 @@ message GetPostQuery {
 }
 
 message GetAuthorQuery {
+	int32 id = 1;
+}
+
+message GetAuthorPostsQuery {
 	int32 id = 1;
 }

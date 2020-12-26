@@ -50,14 +50,14 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                 name: "Authors",
                 columns: table => new
                 {
-                    AuthorId = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: true),
-                    Created = table.Column<string>(type: "TEXT", nullable: true)
+                    DateCreated = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Authors", x => x.AuthorId);
+                    table.PrimaryKey("PK_Authors", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -103,11 +103,11 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                 name: "Tags",
                 columns: table => new
                 {
-                    TagId = table.Column<string>(type: "TEXT", nullable: false)
+                    Id = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tags", x => x.TagId);
+                    table.PrimaryKey("PK_Tags", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -220,22 +220,40 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                 name: "Posts",
                 columns: table => new
                 {
-                    PostId = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     AuthorId = table.Column<int>(type: "INTEGER", nullable: false),
                     Title = table.Column<string>(type: "TEXT", nullable: true),
                     Content = table.Column<string>(type: "TEXT", nullable: true),
-                    Date = table.Column<string>(type: "TEXT", nullable: true),
+                    DateCreated = table.Column<string>(type: "TEXT", nullable: true),
                     BlogStatus = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Posts", x => x.PostId);
+                    table.PrimaryKey("PK_Posts", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Posts_Authors_AuthorId",
                         column: x => x.AuthorId,
                         principalTable: "Authors",
-                        principalColumn: "AuthorId",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PostsExtented",
+                columns: table => new
+                {
+                    PostId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Ts = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PostsExtented", x => x.PostId);
+                    table.ForeignKey(
+                        name: "FK_PostsExtented_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -243,23 +261,23 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                 name: "PostTag",
                 columns: table => new
                 {
-                    PostsPostId = table.Column<int>(type: "INTEGER", nullable: false),
-                    TagsTagId = table.Column<string>(type: "TEXT", nullable: false)
+                    PostsId = table.Column<int>(type: "INTEGER", nullable: false),
+                    TagsId = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PostTag", x => new { x.PostsPostId, x.TagsTagId });
+                    table.PrimaryKey("PK_PostTag", x => new { x.PostsId, x.TagsId });
                     table.ForeignKey(
-                        name: "FK_PostTag_Posts_PostsPostId",
-                        column: x => x.PostsPostId,
+                        name: "FK_PostTag_Posts_PostsId",
+                        column: x => x.PostsId,
                         principalTable: "Posts",
-                        principalColumn: "PostId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PostTag_Tags_TagsTagId",
-                        column: x => x.TagsTagId,
+                        name: "FK_PostTag_Tags_TagsId",
+                        column: x => x.TagsId,
                         principalTable: "Tags",
-                        principalColumn: "TagId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -332,9 +350,9 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                 column: "AuthorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PostTag_TagsTagId",
+                name: "IX_PostTag_TagsId",
                 table: "PostTag",
-                column: "TagsTagId");
+                column: "TagsId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -359,6 +377,9 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "PersistedGrants");
+
+            migrationBuilder.DropTable(
+                name: "PostsExtented");
 
             migrationBuilder.DropTable(
                 name: "PostTag");

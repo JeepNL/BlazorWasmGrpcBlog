@@ -9,25 +9,34 @@
 
 <h1>Blog Posts</h1>
 
-@if (postLst == null)
+@if (postsLst == null)
 {
     <p>Loading ...</p>
 }
 else
 {
-    @foreach (var post in postLst)
+    foreach (var post in postsLst)
     {
-        <p>@post.Title</p>
+        <p>@ToLocalDate(post.DateCreated) - @post.Title by @post.Author.Name - (@post.PostExtended.Ts)</p>
     }
 }
 
 @code {
     private BlogProto.BlogProtoClient client;
-    private IList<Post> postLst;
+    private List<Post> postsLst;
+    private System.Globalization.CultureInfo cultureInfo { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        // TODO, get culture info from browser via JSInterop.
+        cultureInfo = new System.Globalization.CultureInfo("en-US");
         client = new BlogProto.BlogProtoClient(Channel);
-        postLst = (await client.GetPostsAsync(new Empty())).PostsData.ToList();
+        postsLst = (await client.GetPostsAsync(new Empty())).PostsData.ToList();
+    }
+
+    private string ToLocalDate(string dbUtcDate)
+    {
+        string localDate = DateTime.ParseExact(dbUtcDate, "yyyy-MM-dd HH:mm:ss", cultureInfo).ToLocalTime().ToString("yyyy-MM-dd HH:mm");
+        return localDate;
     }
 }
