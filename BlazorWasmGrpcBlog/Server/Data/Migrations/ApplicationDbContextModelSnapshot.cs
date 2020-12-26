@@ -106,14 +106,14 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                     b.Property<int>("AuthorId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("BlogStatus")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Content")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("DateCreated")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("PostStatus")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Title")
                         .HasColumnType("TEXT");

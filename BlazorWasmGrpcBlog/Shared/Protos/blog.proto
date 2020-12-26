@@ -21,8 +21,8 @@ message Authors {
 	repeated Author authors_data = 1;
 }
 
-enum BlogStatus {
-    HIDDEN = 0;
+enum PostStatus {
+    HIDDEN = 0; // Default, must be 0.
     PUBLISHED = 1;
 	DELETED = 2;
 }
@@ -33,7 +33,7 @@ message Post { // For Public
 	string title = 3;
 	string content = 4;
 	string date_created = 5; // DateTime (UTC)
-	BlogStatus blog_status = 6; // enum
+	PostStatus post_status = 6; // enum
 	PostExtended post_extended = 7; // one to one
 	Author author = 8; // one to one
 	repeated Tag tags = 9; // Post with many Tags

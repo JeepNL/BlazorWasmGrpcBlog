@@ -226,7 +226,7 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                     Title = table.Column<string>(type: "TEXT", nullable: true),
                     Content = table.Column<string>(type: "TEXT", nullable: true),
                     DateCreated = table.Column<string>(type: "TEXT", nullable: true),
-                    BlogStatus = table.Column<int>(type: "INTEGER", nullable: false)
+                    PostStatus = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {

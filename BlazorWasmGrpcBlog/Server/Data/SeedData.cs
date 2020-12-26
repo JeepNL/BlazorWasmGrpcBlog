@@ -81,7 +81,7 @@ namespace BlazorWasmGrpcBlog.Server.Data
 				AuthorId = 1,
 				Title = "First Post",
 				DateCreated = utcDate,
-				BlogStatus = BlogStatus.Published
+				PostStatus = PostStatus.Published
 			}); ;
 			ctx.Posts.Add(new Post()
 			{
@@ -89,7 +89,7 @@ namespace BlazorWasmGrpcBlog.Server.Data
 				AuthorId = 2,
 				Title = "Second Post",
 				DateCreated = utcDate,
-				BlogStatus = BlogStatus.Published
+				PostStatus = PostStatus.Published
 			});
 			ctx.Posts.Add(new Post()
 			{
@@ -97,7 +97,7 @@ namespace BlazorWasmGrpcBlog.Server.Data
 				AuthorId = 3,
 				Title = "Third Post",
 				DateCreated = utcDate,
-				BlogStatus = BlogStatus.Published
+				PostStatus = PostStatus.Published
 			});
 
 			// Seed Extended info to Posts
