@@ -224,7 +224,6 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     AuthorId = table.Column<int>(type: "INTEGER", nullable: false),
                     Title = table.Column<string>(type: "TEXT", nullable: true),
-                    Content = table.Column<string>(type: "TEXT", nullable: true),
                     DateCreated = table.Column<string>(type: "TEXT", nullable: true),
                     PostStatus = table.Column<int>(type: "INTEGER", nullable: false)
                 },
@@ -244,6 +243,7 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                 columns: table => new
                 {
                     PostId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Content = table.Column<string>(type: "TEXT", nullable: true),
                     Ts = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>

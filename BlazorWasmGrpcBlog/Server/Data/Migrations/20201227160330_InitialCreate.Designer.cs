@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorWasmGrpcBlog.Server.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201227144609_InitialCreate")]
+    [Migration("20201227160330_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -108,9 +108,6 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                     b.Property<int>("AuthorId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Content")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("DateCreated")
                         .HasColumnType("TEXT");
 
@@ -131,6 +128,9 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                 {
                     b.Property<int>("PostId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Ts")
                         .HasColumnType("TEXT");

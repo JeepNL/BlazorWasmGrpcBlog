@@ -38,17 +38,6 @@ namespace BlazorWasmGrpcBlog.Server.Services
 				.SingleOrDefaultAsync(post => post.Id == request.Id);
 		}
 
-		public override async Task<Posts> GetAuthorPosts(GetAuthorPostsQuery request, ServerCallContext context)
-		{
-			var authorPosts = new Posts();
-			var allPosts = await dbContext.Posts
-				.Where(p => p.AuthorId == request.Id)
-				.ToListAsync();
-			authorPosts.PostsData.AddRange(allPosts);
-			return authorPosts;
-		}
-
-
 		public override async Task<Authors> GetAuthors(Empty request, ServerCallContext context)
 		{
 			var authors = new Authors();
@@ -56,6 +45,12 @@ namespace BlazorWasmGrpcBlog.Server.Services
 				.ToListAsync();
 			authors.AuthorsData.AddRange(allAuthors);
 			return authors;
+		}
+
+		public override async Task<Author> GetAuthor(GetAuthorQuery request, ServerCallContext context)
+		{
+			return await dbContext.Authors
+				.SingleOrDefaultAsync(author => author.Id == request.Id);
 		}
 
 	}
