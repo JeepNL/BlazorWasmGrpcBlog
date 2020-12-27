@@ -21,13 +21,7 @@ message Authors {
 	repeated Author authors_data = 1;
 }
 
-enum PostStatus {
-	HIDDEN = 0; // Default, must be 0.
-	PUBLISHED = 1;
-	DELETED = 2;
-}
-
-message Post { // For Public
+message Post { // For Public Access
 	int32 id = 1;
 	int32 author_id = 2;
 	string title = 3;
@@ -42,16 +36,24 @@ message Posts {
 	repeated Post posts_data = 1;
 }
 
-message PostExtended { // Extra Post Info For Moderators/Admins
-	int32 post_id = 1;
-	google.protobuf.Timestamp Ts = 2; // TODO EF Core ValueConverter
+message PostExtended { // Extra Post Info For Authorized (Roles) Access  i.e. Moderators/Admins
+	int32 post_id = 1; // Same key as Post, see ApplicationsDbContext.cs -> modelBuilder.Entity<PostExtended>() -> HasKey & ValueGeneratedNever
+	google.protobuf.Timestamp Ts = 2; // See tsConverter in ApplicationsDbContext.cs
 	// etc. etc.
 }
 
+enum PostStatus {
+	POST_STATUS_HIDDEN = 0; // Default, must be 0.
+	POST_STATUS_PUBLISHED = 1;
+	POST_STATUS_DELETED = 2;
+}
+
 /*
+	TODO: Many to Many Tag in auto generated table "PostTag"
+
 	Because of "message Post" with "repeated Tag tags"
 	and "message Tag" with "repeated Post posts"
-	EF Core creates "PostTag" table 'automagically'.'
+	EF Core creates "PostTag" table 'automagically'.
 */
 
 message Tag {

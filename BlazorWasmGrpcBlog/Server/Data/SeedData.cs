@@ -25,9 +25,9 @@ namespace BlazorWasmGrpcBlog.Server.Data
 
 		public void BlogSeed()
 		{
-			// ctx.Database.EnsureDeleted();
-			// ctx.Database.EnsureCreated();
-			ctx.Database.Migrate();
+			// ctx.Database.EnsureDeleted(); // without migrations
+			// ctx.Database.EnsureCreated(); // without migrations
+			ctx.Database.Migrate(); // with migrations
 
 			if (ctx.Posts.Any())
 			{
