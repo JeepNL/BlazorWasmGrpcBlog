@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorWasmGrpcBlog.Server.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201227160330_InitialCreate")]
+    [Migration("20201228110553_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -111,7 +111,7 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                     b.Property<string>("DateCreated")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("PostStatus")
+                    b.Property<int>("PostStat")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Title")
@@ -387,34 +387,34 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
 
             modelBuilder.Entity("PostTag", b =>
                 {
-                    b.Property<int>("PostsId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("TagsId")
+                    b.Property<string>("PostTagsId")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("PostsId", "TagsId");
+                    b.Property<int>("TagPostsDataId")
+                        .HasColumnType("INTEGER");
 
-                    b.HasIndex("TagsId");
+                    b.HasKey("PostTagsId", "TagPostsDataId");
+
+                    b.HasIndex("TagPostsDataId");
 
                     b.ToTable("PostTag");
                 });
 
             modelBuilder.Entity("BlazorWasmGrpcBlog.Shared.Protos.Post", b =>
                 {
-                    b.HasOne("BlazorWasmGrpcBlog.Shared.Protos.Author", "Author")
+                    b.HasOne("BlazorWasmGrpcBlog.Shared.Protos.Author", "PostAuthor")
                         .WithMany()
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Author");
+                    b.Navigation("PostAuthor");
                 });
 
             modelBuilder.Entity("BlazorWasmGrpcBlog.Shared.Protos.PostExtended", b =>
                 {
                     b.HasOne("BlazorWasmGrpcBlog.Shared.Protos.Post", null)
-                        .WithOne("PostExtended")
+                        .WithOne("PostExt")
                         .HasForeignKey("BlazorWasmGrpcBlog.Shared.Protos.PostExtended", "PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -473,22 +473,22 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
 
             modelBuilder.Entity("PostTag", b =>
                 {
-                    b.HasOne("BlazorWasmGrpcBlog.Shared.Protos.Post", null)
+                    b.HasOne("BlazorWasmGrpcBlog.Shared.Protos.Tag", null)
                         .WithMany()
-                        .HasForeignKey("PostsId")
+                        .HasForeignKey("PostTagsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BlazorWasmGrpcBlog.Shared.Protos.Tag", null)
+                    b.HasOne("BlazorWasmGrpcBlog.Shared.Protos.Post", null)
                         .WithMany()
-                        .HasForeignKey("TagsId")
+                        .HasForeignKey("TagPostsDataId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("BlazorWasmGrpcBlog.Shared.Protos.Post", b =>
                 {
-                    b.Navigation("PostExtended");
+                    b.Navigation("PostExt");
                 });
 #pragma warning restore 612, 618
         }

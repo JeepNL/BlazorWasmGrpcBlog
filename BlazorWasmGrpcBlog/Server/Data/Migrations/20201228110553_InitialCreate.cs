@@ -225,7 +225,7 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                     AuthorId = table.Column<int>(type: "INTEGER", nullable: false),
                     Title = table.Column<string>(type: "TEXT", nullable: true),
                     DateCreated = table.Column<string>(type: "TEXT", nullable: true),
-                    PostStatus = table.Column<int>(type: "INTEGER", nullable: false)
+                    PostStat = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -261,21 +261,21 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                 name: "PostTag",
                 columns: table => new
                 {
-                    PostsId = table.Column<int>(type: "INTEGER", nullable: false),
-                    TagsId = table.Column<string>(type: "TEXT", nullable: false)
+                    PostTagsId = table.Column<string>(type: "TEXT", nullable: false),
+                    TagPostsDataId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PostTag", x => new { x.PostsId, x.TagsId });
+                    table.PrimaryKey("PK_PostTag", x => new { x.PostTagsId, x.TagPostsDataId });
                     table.ForeignKey(
-                        name: "FK_PostTag_Posts_PostsId",
-                        column: x => x.PostsId,
+                        name: "FK_PostTag_Posts_TagPostsDataId",
+                        column: x => x.TagPostsDataId,
                         principalTable: "Posts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PostTag_Tags_TagsId",
-                        column: x => x.TagsId,
+                        name: "FK_PostTag_Tags_PostTagsId",
+                        column: x => x.PostTagsId,
                         principalTable: "Tags",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -350,9 +350,9 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                 column: "AuthorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PostTag_TagsId",
+                name: "IX_PostTag_TagPostsDataId",
                 table: "PostTag",
-                column: "TagsId");
+                column: "TagPostsDataId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

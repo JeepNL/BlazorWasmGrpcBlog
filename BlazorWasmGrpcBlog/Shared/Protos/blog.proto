@@ -15,7 +15,7 @@ message Author {
 	int32 id = 1;
 	string name = 2;
 	string date_created = 3; // DateTime (UTC) string because of SQLite
-	//repeated Post posts_data = 4; // one author with many posts. TODO: Doesn't work. ReferenceLoopHandling like in Newtonsoft.Json? 'message Post' does have 'Author'.
+	// repeated Post author_posts_data = 4; // Author with many Posts. TODO: Doesn't work. ReferenceLoopHandling like in Newtonsoft.Json? 'message Post' does have 'Author'.
 }
 message Authors {
 	repeated Author authors_data = 1;
@@ -26,10 +26,10 @@ message Post { // For Public Access
 	int32 author_id = 2;
 	string title = 3;
 	string date_created = 4; // DateTime (UTC) string because of SQLite
-	PostStatus post_status = 5; // enum
-	PostExtended post_extended = 6; // one to one
-	Author author = 7; // one to one
-	repeated Tag tags = 8; // Post with many Tags
+	PostStatus post_stat = 5; // enum
+	PostExtended post_ext = 6; // one to one
+	Author post_author = 7; // Post with one author, one to one
+	repeated Tag post_tags = 8; // Post with many Tags
 }
 message Posts {
 	repeated Post posts_data = 1;
@@ -70,7 +70,7 @@ enum PostStatus {
 
 message Tag {
 	string id = 1; // Tag itself: string
-	repeated Post posts = 2; // Tag with many Posts
+	repeated Post tag_posts_data = 2; // Tag with many Posts
 }
 message Tags {
 	repeated Tag tags_data = 1;

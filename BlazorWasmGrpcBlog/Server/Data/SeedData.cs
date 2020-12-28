@@ -42,8 +42,7 @@ namespace BlazorWasmGrpcBlog.Server.Data
 			{
 				Id = 1,
 				Name = "Author I",
-				DateCreated = utcDate
-
+				DateCreated = utcDate,
 			});
 			ctx.Authors.Add(new Author()
 			{
@@ -81,15 +80,15 @@ namespace BlazorWasmGrpcBlog.Server.Data
 				AuthorId = 1,
 				Title = "First Post",
 				DateCreated = utcDate,
-				PostStatus = PostStatus.Published
-			}); ;
+				PostStat = PostStatus.Published,
+			});
 			ctx.Posts.Add(new Post()
 			{
 				Id = 2,
 				AuthorId = 2,
 				Title = "Second Post",
 				DateCreated = utcDate,
-				PostStatus = PostStatus.Published
+				PostStat = PostStatus.Published
 			});
 			ctx.Posts.Add(new Post()
 			{
@@ -97,7 +96,7 @@ namespace BlazorWasmGrpcBlog.Server.Data
 				AuthorId = 3,
 				Title = "Third Post",
 				DateCreated = utcDate,
-				PostStatus = PostStatus.Published
+				PostStat = PostStatus.Published
 			});
 
 			// Seed Extended info to Posts
