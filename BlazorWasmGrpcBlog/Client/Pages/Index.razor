@@ -15,19 +15,16 @@ else
 {
     foreach (var post in postsLst)
     {
-        <p>@DateUtils.DbUtc2Str(post.DateCreated) - @post.Title by @post.PostAuthor.Name - @DateUtils.ProtoTs2Str(post.PostExt.Ts)</p>
+        <p>@DtUtils.DbUtc2Local(post.DateCreated) - @post.Title by @post.PostAuthor.Name - @DtUtils.ProtoTs2Utc(post.PostExt.Ts)</p>
     }
 }
 
 @code {
     private BlogProto.BlogProtoClient client;
     private List<Post> postsLst;
-    //private System.Globalization.CultureInfo cultureInfo { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        // TODO, get culture info from browser via JSInterop.
-        // cultureInfo = new System.Globalization.CultureInfo("en-US");
         client = new BlogProto.BlogProtoClient(Channel);
         postsLst = (await client.GetPostsAsync(new Empty())).PostsData.ToList();
     }

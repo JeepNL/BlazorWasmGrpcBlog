@@ -1,10 +1,12 @@
 ﻿using BlazorWasmGrpcBlog.Server.Models;
+using BlazorWasmGrpcBlog.Shared.Helpers;
 using BlazorWasmGrpcBlog.Shared.Protos;
 using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -30,19 +32,35 @@ namespace BlazorWasmGrpcBlog.Server.Data
 		public DbSet<PostExtended> PostsExtented { get; set; }
 		public DbSet<Tag> Tags { get; set; }
 
-		public override int SaveChanges()
-		{
-			return base.SaveChanges();
-		}
+		//public override int SaveChanges()
+		//{
+		//	return base.SaveChanges();
+		//}
+
+		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+			=> optionsBuilder
+				.LogTo(Console.WriteLine, LogLevel.Information)
+				.EnableSensitiveDataLogging();
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			base.OnModelCreating(modelBuilder);
 
+			// From ON.NET Deep Dive in Many to Many Part 2
+			modelBuilder
+				.Entity<Post>()
+				.HasMany(e => e.TagsInPostsData)
+				.WithMany(e => e.PostsInTagsData)
+				.UsingEntity<Dictionary<string, object>>(
+					"PostsTags", // (Join) Table Name.
+					b => b.HasOne<Tag>().WithMany().HasForeignKey("PostId"), // Field Name.
+					b => b.HasOne<Post>().WithMany().HasForeignKey("TagId") // Field Name.
+				);
+
 			var tsConverter = new ValueConverter<Google.Protobuf.WellKnownTypes.Timestamp, string>(
-				 v => v == null ? null : v.ToDateTimeOffset().ToString("yyyy-MM-dd HH:mm:ss zzz"), // To DB
+				 v => v == null ? null : v.ToDateTimeOffset().ToString(DtFormats.DbUtc), // UTC To DB
 				 v => v == null ? null : Google.Protobuf.WellKnownTypes.Timestamp
-					.FromDateTimeOffset(DateTime.ParseExact(v, "yyyy-MM-dd HH:mm:ss zzz", System.Globalization.CultureInfo.InvariantCulture)) // From DB
+					.FromDateTimeOffset(DateTime.ParseExact(v, DtFormats.DbUtc, System.Globalization.CultureInfo.InvariantCulture)) // UTC From DB
 			);
 			modelBuilder.Entity<PostExtended>().Property(e => e.Ts).HasConversion(tsConverter);
 

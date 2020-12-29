@@ -25,7 +25,7 @@ namespace BlazorWasmGrpcBlog.Server.Services
 			var allPosts = await dbContext.Posts
 				.Where(o => o.PostStat == PostStatus.Published)
 				.Include(p => p.PostAuthor)
-				.Include(q => q.PostExt)
+				.Include(q => q.PostExt) // Temporary for TimeStamp
 				.OrderByDescending(r => r.DateCreated)
 				.ToListAsync();
 			posts.PostsData.AddRange(allPosts);
@@ -37,7 +37,7 @@ namespace BlazorWasmGrpcBlog.Server.Services
 			return await dbContext.Posts
 				.Include(p => p.PostAuthor)
 				.Include(q => q.PostExt)
-				.SingleOrDefaultAsync(post => post.Id == request.Id);
+				.SingleOrDefaultAsync(post => post.PostId == request.Id);
 		}
 
 		public override async Task<Authors> GetAuthors(Empty request, ServerCallContext context)
@@ -52,7 +52,7 @@ namespace BlazorWasmGrpcBlog.Server.Services
 		public override async Task<Author> GetAuthor(GetAuthorQuery request, ServerCallContext context)
 		{
 			return await dbContext.Authors
-				.SingleOrDefaultAsync(author => author.Id == request.Id);
+				.SingleOrDefaultAsync(author => author.AuthorId == request.Id);
 		}
 
 	}

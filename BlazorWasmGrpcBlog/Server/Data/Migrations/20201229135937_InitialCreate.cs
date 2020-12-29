@@ -50,14 +50,14 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                 name: "Authors",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    AuthorId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: true),
                     DateCreated = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Authors", x => x.Id);
+                    table.PrimaryKey("PK_Authors", x => x.AuthorId);
                 });
 
             migrationBuilder.CreateTable(
@@ -103,11 +103,13 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                 name: "Tags",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "TEXT", nullable: false)
+                    TagId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tags", x => x.Id);
+                    table.PrimaryKey("PK_Tags", x => x.TagId);
                 });
 
             migrationBuilder.CreateTable(
@@ -220,7 +222,7 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                 name: "Posts",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    PostId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     AuthorId = table.Column<int>(type: "INTEGER", nullable: false),
                     Title = table.Column<string>(type: "TEXT", nullable: true),
@@ -229,12 +231,12 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Posts", x => x.Id);
+                    table.PrimaryKey("PK_Posts", x => x.PostId);
                     table.ForeignKey(
                         name: "FK_Posts_Authors_AuthorId",
                         column: x => x.AuthorId,
                         principalTable: "Authors",
-                        principalColumn: "Id",
+                        principalColumn: "AuthorId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -253,31 +255,31 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                         name: "FK_PostsExtented_Posts_PostId",
                         column: x => x.PostId,
                         principalTable: "Posts",
-                        principalColumn: "Id",
+                        principalColumn: "PostId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "PostTag",
+                name: "PostsTags",
                 columns: table => new
                 {
-                    PostTagsId = table.Column<string>(type: "TEXT", nullable: false),
-                    TagPostsDataId = table.Column<int>(type: "INTEGER", nullable: false)
+                    PostId = table.Column<int>(type: "INTEGER", nullable: false),
+                    TagId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PostTag", x => new { x.PostTagsId, x.TagPostsDataId });
+                    table.PrimaryKey("PK_PostsTags", x => new { x.PostId, x.TagId });
                     table.ForeignKey(
-                        name: "FK_PostTag_Posts_TagPostsDataId",
-                        column: x => x.TagPostsDataId,
+                        name: "FK_PostsTags_Posts_TagId",
+                        column: x => x.TagId,
                         principalTable: "Posts",
-                        principalColumn: "Id",
+                        principalColumn: "PostId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PostTag_Tags_PostTagsId",
-                        column: x => x.PostTagsId,
+                        name: "FK_PostsTags_Tags_PostId",
+                        column: x => x.PostId,
                         principalTable: "Tags",
-                        principalColumn: "Id",
+                        principalColumn: "TagId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -350,9 +352,9 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                 column: "AuthorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PostTag_TagPostsDataId",
-                table: "PostTag",
-                column: "TagPostsDataId");
+                name: "IX_PostsTags_TagId",
+                table: "PostsTags",
+                column: "TagId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -382,7 +384,7 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                 name: "PostsExtented");
 
             migrationBuilder.DropTable(
-                name: "PostTag");
+                name: "PostsTags");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

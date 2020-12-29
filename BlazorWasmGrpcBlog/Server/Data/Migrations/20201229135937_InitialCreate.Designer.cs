@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorWasmGrpcBlog.Server.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201228110553_InitialCreate")]
+    [Migration("20201229135937_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -84,7 +84,7 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
 
             modelBuilder.Entity("BlazorWasmGrpcBlog.Shared.Protos.Author", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("AuthorId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -94,14 +94,14 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.HasKey("AuthorId");
 
                     b.ToTable("Authors");
                 });
 
             modelBuilder.Entity("BlazorWasmGrpcBlog.Shared.Protos.Post", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("PostId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -117,7 +117,7 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.HasKey("PostId");
 
                     b.HasIndex("AuthorId");
 
@@ -142,10 +142,14 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
 
             modelBuilder.Entity("BlazorWasmGrpcBlog.Shared.Protos.Tag", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<int>("TagId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.HasKey("TagId");
 
                     b.ToTable("Tags");
                 });
@@ -385,19 +389,19 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("PostTag", b =>
+            modelBuilder.Entity("PostsTags", b =>
                 {
-                    b.Property<string>("PostTagsId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("TagPostsDataId")
+                    b.Property<int>("PostId")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("PostTagsId", "TagPostsDataId");
+                    b.Property<int>("TagId")
+                        .HasColumnType("INTEGER");
 
-                    b.HasIndex("TagPostsDataId");
+                    b.HasKey("PostId", "TagId");
 
-                    b.ToTable("PostTag");
+                    b.HasIndex("TagId");
+
+                    b.ToTable("PostsTags");
                 });
 
             modelBuilder.Entity("BlazorWasmGrpcBlog.Shared.Protos.Post", b =>
@@ -471,17 +475,17 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PostTag", b =>
+            modelBuilder.Entity("PostsTags", b =>
                 {
                     b.HasOne("BlazorWasmGrpcBlog.Shared.Protos.Tag", null)
                         .WithMany()
-                        .HasForeignKey("PostTagsId")
+                        .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BlazorWasmGrpcBlog.Shared.Protos.Post", null)
                         .WithMany()
-                        .HasForeignKey("TagPostsDataId")
+                        .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

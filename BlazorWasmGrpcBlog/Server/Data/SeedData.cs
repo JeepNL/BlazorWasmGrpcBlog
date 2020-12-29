@@ -12,6 +12,7 @@ using BlazorWasmGrpcBlog.Shared;
 using BlazorWasmGrpcBlog.Shared.Protos;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using BlazorWasmGrpcBlog.Shared.Helpers;
 
 namespace BlazorWasmGrpcBlog.Server.Data
 {
@@ -25,97 +26,49 @@ namespace BlazorWasmGrpcBlog.Server.Data
 
 		public void BlogSeed()
 		{
-			// ctx.Database.EnsureDeleted(); // without migrations
-			// ctx.Database.EnsureCreated(); // without migrations
-			ctx.Database.Migrate(); // with migrations
+			// 1) Delete "BlogDB.sqlite3" & "Migrations" Folder
+			// 2) Run in Package Manager Console:
+			//		Clear; Add-Migration InitialCreate -OutputDir "Data/Migrations"; Update-Database;
+
+			// Extra Info
+			ctx.Database.EnsureDeleted();
+			ctx.Database.Migrate(); // with migrations //ctx.Database.EnsureCreated(); // without migrations
 
 			if (ctx.Posts.Any())
 			{
 				return;
 			}
 
-			var utcDate = DateTimeOffset.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
+			var utcDate = DateTimeOffset.UtcNow.ToString(DtFormats.DbUtc);
 			var utcTs = DateTimeOffset.UtcNow.ToTimestamp();
 
-			// Seed Authors
-			ctx.Authors.Add(new Author()
-			{
-				Id = 1,
-				Name = "Author I",
-				DateCreated = utcDate,
-			});
-			ctx.Authors.Add(new Author()
-			{
-				Id = 2,
-				Name = "Author II",
-				DateCreated = utcDate
-			});
-			ctx.Authors.Add(new Author()
-			{
-				Id = 3,
-				Name = "Author III",
-				DateCreated = utcDate
-			});
+			var author1 = new Author() { AuthorId = 1, Name = "Author I", DateCreated = utcDate };
+			var author2 = new Author() { AuthorId = 2, Name = "Author II", DateCreated = utcDate };
+			var author3 = new Author() { AuthorId = 3, Name = "Author III", DateCreated = utcDate };
 
-			// Seed Tags
-			ctx.Tags.Add(new Tag()
-			{
-				Id = "TagOne"
-			});
+			var tag1 = new Tag() { TagId = 1, Name = "TagOne" };
+			var tag2 = new Tag() { TagId = 2, Name = "TagTwo" };
+			var tag3 = new Tag() { TagId = 3, Name = "Tagthree" };
 
-			ctx.Tags.Add(new Tag()
-			{
-				Id = "TagTwo"
-			});
+			var post1 = new Post() { PostId = 1, AuthorId = 1, Title = "First Post", DateCreated = utcDate, PostStat = PostStatus.Published };
+			var post2 = new Post() { PostId = 2, AuthorId = 2, Title = "Second Post", DateCreated = utcDate, PostStat = PostStatus.Published };
+			var post3 = new Post() { PostId = 3, AuthorId = 3, Title = "Third Post", DateCreated = utcDate, PostStat = PostStatus.Published };
 
-			ctx.Tags.Add(new Tag()
-			{
-				Id = "TagThree"
-			});
+			var postExtended1 = new PostExtended() { PostId = 1, Content = "Post One Content", Ts = utcTs };
+			var postExtended2 = new PostExtended() { PostId = 2, Content = "Post Two Content", Ts = utcTs };
+			var postExtended3 = new PostExtended() { PostId = 3, Content = "Post Three Content", Ts = utcTs };
 
-			// Seed Posts
-			ctx.Posts.Add(new Post()
-			{
-				Id = 1,
-				AuthorId = 1,
-				Title = "First Post",
-				DateCreated = utcDate,
-				PostStat = PostStatus.Published,
-			});
-			ctx.Posts.Add(new Post()
-			{
-				Id = 2,
-				AuthorId = 2,
-				Title = "Second Post",
-				DateCreated = utcDate,
-				PostStat = PostStatus.Published
-			});
-			ctx.Posts.Add(new Post()
-			{
-				Id = 3,
-				AuthorId = 3,
-				Title = "Third Post",
-				DateCreated = utcDate,
-				PostStat = PostStatus.Published
-			});
+			// Adding posts to a tag results in an error:
+			//   crit: Microsoft.AspNetCore.Hosting.Diagnostics[6]
+			//   Application startup exception
+			//   System.InvalidOperationException: No backing field could be found for property 'Tag.PostsInTagsData' and the property does not have a setter.
 
-			// Seed Extended info to Posts
-			ctx.PostsExtented.Add(new PostExtended()
-			{
-				PostId = 1,
-				Ts = utcTs
-			}); ;
-			ctx.PostsExtented.Add(new PostExtended()
-			{
-				PostId = 2,
-				Ts = utcTs
-			});
-			ctx.PostsExtented.Add(new PostExtended()
-			{
-				PostId = 3,
-				Ts = utcTs
-			});
+			// Uncomment the 3 lines below to see the error.
+			//tag1.PostsInTagsData.AddRange(new[] { post1 });
+			//tag2.PostsInTagsData.AddRange(new[] { post1, post3 });
+			//tag3.PostsInTagsData.AddRange(new[] { post2, post3 });
 
+			ctx.AddRange(author1, author2, author3, tag1, tag2, tag3, post1, post2, post3, postExtended1, postExtended2, postExtended3);
 			ctx.SaveChanges();
 		}
 	}
