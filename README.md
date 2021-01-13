@@ -2,7 +2,7 @@
 
 ### 🛠 Under Construction
 
-Blazor 5.x WASM Sample Project for gRPC with related (EF Core/SQLite) data. 
+**Working** (CTRL-F5) Kestrel Hosted Blazor 5.x WASM Sample Project (with Identity) for gRPC with related (EF Core/SQLite) data. 
  - One to One
  - One to Many
  - Many to Many
