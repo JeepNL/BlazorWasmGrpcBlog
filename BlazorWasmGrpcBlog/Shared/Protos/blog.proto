@@ -29,17 +29,18 @@ message Post { // For Public Access
 	PostStatus post_stat = 5; // enum
 	PostExtended post_ext = 6; // one to one
 	Author post_author = 7; // Post with one author, one to one
-	repeated Tag tags_in_posts_data = 8; // Post with many Tags
+	repeated Tag tags_in_post_data = 8; // Post with many Tags
 }
 message Posts {
 	repeated Post posts_data = 1;
 }
 
 /*
-	TODO: Many to Many Tags in auto generated table "PostTag"
+	Many to Many Tags in auto generated table "PostsTags" 
+	EF Core auto generates 'PostTag' table, Renaming it to 'PostsTags' is done in ApplicationDbContext
 
-	Because of "message Post" with "repeated Tag tags"
-	and "message Tag" with "repeated Post posts"
+	Because of "message Post" with "repeated Tag tags_data"
+	and "message Tag" with "repeated Post posts_data"
 	EF Core creates "PostTag" table 'automagically'.
 */
 
@@ -47,7 +48,7 @@ message Tag {
 	//string tag_id = 1; // Tag itself: string
 	int32 tag_id = 1;
 	string name = 2;
-	repeated Post posts_in_tags_data = 3; // Tag with many Posts
+	repeated Post posts_in_tag_data = 3; // Tag with many Posts
 }
 message Tags {
 	repeated Tag tags_data = 1;

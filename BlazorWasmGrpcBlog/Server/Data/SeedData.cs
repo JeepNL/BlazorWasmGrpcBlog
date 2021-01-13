@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Google.Protobuf.WellKnownTypes;
-using IdentityServer4.Validation;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
-using BlazorWasmGrpcBlog.Server.Models;
-using BlazorWasmGrpcBlog.Shared;
-using BlazorWasmGrpcBlog.Shared.Protos;
-using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
+﻿using BlazorWasmGrpcBlog.Server.Models;
 using BlazorWasmGrpcBlog.Shared.Helpers;
+using BlazorWasmGrpcBlog.Shared.Protos;
+using Google.Protobuf.WellKnownTypes;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
 
 namespace BlazorWasmGrpcBlog.Server.Data
 {
@@ -26,11 +18,16 @@ namespace BlazorWasmGrpcBlog.Server.Data
 
 		public void BlogSeed()
 		{
-			// 1) Delete "BlogDB.sqlite3" & "Migrations" Folder
-			// 2) Run in Package Manager Console:
+			// Info
+			// SQLite DB
+			// When Proto/ Model Change
+			// Visual Studio:
+			//		Delete /Server/Data/Migrations folder
+			//		Delete /Server/Data/BlogDB.sqlite3
+			// Package Manager Console:
 			//		Clear; Add-Migration InitialCreate -OutputDir "Data/Migrations"; Update-Database;
 
-			// Extra Info
+			// Extra for testing purposes, start with a clean DB.
 			ctx.Database.EnsureDeleted();
 			ctx.Database.Migrate(); // with migrations //ctx.Database.EnsureCreated(); // without migrations
 
@@ -58,17 +55,18 @@ namespace BlazorWasmGrpcBlog.Server.Data
 			var postExtended2 = new PostExtended() { PostId = 2, Content = "Post Two Content", Ts = utcTs };
 			var postExtended3 = new PostExtended() { PostId = 3, Content = "Post Three Content", Ts = utcTs };
 
-			// Adding posts to a tag results in an error:
-			//   crit: Microsoft.AspNetCore.Hosting.Diagnostics[6]
-			//   Application startup exception
-			//   System.InvalidOperationException: No backing field could be found for property 'Tag.PostsInTagsData' and the property does not have a setter.
+			// Extra for testing/Learning
+			// See (gavilanch3) https://www.youtube.com/watch?v=yJAf5fKpGO
+			//var post1Tags = new PostsTags2() { TagId = tag1.TagId, PostId = post1.PostId };
+			//ctx.AddRange(author1, author2, author3, tag1, tag2, tag3, post1, post2, post3, postExtended1, postExtended2, postExtended3, post1Tags);
 
-			// Uncomment the 3 lines below to see the error.
-			//tag1.PostsInTagsData.AddRange(new[] { post1 });
-			//tag2.PostsInTagsData.AddRange(new[] { post1, post3 });
-			//tag3.PostsInTagsData.AddRange(new[] { post2, post3 });
-
+			// From ON.NET Deep Dive in Many to Many Part 2 https://channel9.msdn.com/Shows/On-NET/Deep-Dive-into-Many-to-Many-A-Tour-of-EF-Core-50-pt-2
+			// This now works!! See: https://github.com/dotnet/efcore/issues/23703#issuecomment-758801618, change needed in ApplicationDbContext.cs
+			tag1.PostsInTagData.AddRange(new[] { post1 });
+			tag2.PostsInTagData.AddRange(new[] { post1, post3 });
+			tag3.PostsInTagData.AddRange(new[] { post2, post3 });
 			ctx.AddRange(author1, author2, author3, tag1, tag2, tag3, post1, post2, post3, postExtended1, postExtended2, postExtended3);
+
 			ctx.SaveChanges();
 		}
 	}
