@@ -7,6 +7,8 @@ Blazor 5.x WASM Sample Project for gRPC with related (EF Core/SQLite) data.
  - One to Many
  - Many to Many
  
+Tip: Watch: On .NET Deep Dive into Many-to-Many: [A Tour of EF Core 5.0 pt. 2](https://channel9.msdn.com/Shows/On-NET/Deep-Dive-into-Many-to-Many-A-Tour-of-EF-Core-50-pt-2)
+ 
 Adding data to Many to Many Join Table 'PostsTags' now works because of just the 2 lines below.
 
 See: https://github.com/dotnet/efcore/issues/23703#issuecomment-758801618
