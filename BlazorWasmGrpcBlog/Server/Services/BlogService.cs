@@ -23,10 +23,11 @@ namespace BlazorWasmGrpcBlog.Server.Services
 		{
 			var posts = new Posts();
 			var allPosts = await dbContext.Posts
-				.Where(o => o.PostStat == PostStatus.Published)
-				.Include(p => p.PostAuthor)
-				.Include(q => q.PostExt) // Temporary for TimeStamp
-				.OrderByDescending(r => r.DateCreated)
+				.Where(ps => ps.PostStat == PostStatus.Published)
+				.Include(pa => pa.PostAuthor)
+				.Include(pe => pe.PostExt)
+				//.Include(tipd => tipd.TagsInPostData) // TODO: [ERROR] / doesn't work: results in a stack overflow.
+				.OrderByDescending(dc => dc.DateCreated)
 				.ToListAsync();
 			posts.PostsData.AddRange(allPosts);
 			return posts;
@@ -35,8 +36,8 @@ namespace BlazorWasmGrpcBlog.Server.Services
 		public override async Task<Post> GetPost(GetPostQuery request, ServerCallContext context)
 		{
 			return await dbContext.Posts
-				.Include(p => p.PostAuthor)
-				.Include(q => q.PostExt)
+				.Include(pa => pa.PostAuthor)
+				.Include(pe => pe.PostExt)
 				.SingleOrDefaultAsync(post => post.PostId == request.Id);
 		}
 

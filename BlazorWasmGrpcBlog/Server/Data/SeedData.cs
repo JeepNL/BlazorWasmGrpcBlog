@@ -27,7 +27,7 @@ namespace BlazorWasmGrpcBlog.Server.Data
 			// Package Manager Console:
 			//		Clear; Add-Migration InitialCreate -OutputDir "Data/Migrations"; Update-Database;
 
-			// Extra for testing purposes, start with a clean DB.
+			// Extra for testing only, start with a clean DB.
 			ctx.Database.EnsureDeleted();
 			ctx.Database.Migrate(); // with migrations //ctx.Database.EnsureCreated(); // without migrations
 

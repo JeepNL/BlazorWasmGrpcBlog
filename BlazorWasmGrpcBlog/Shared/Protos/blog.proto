@@ -15,7 +15,6 @@ message Author {
 	int32 author_id = 1;
 	string name = 2;
 	string date_created = 3; // DateTime (UTC) string because of SQLite
-	// repeated Post author_posts_data = 4; // Author with many Posts. TODO: Doesn't work. ReferenceLoopHandling like in Newtonsoft.Json? 'message Post' does have 'Author'.
 }
 message Authors {
 	repeated Author authors_data = 1;
@@ -36,7 +35,7 @@ message Posts {
 }
 
 /*
-	Many to Many Tags in auto generated table "PostsTags" 
+	Many to Many Tags in auto generated table "PostsTags"
 	EF Core auto generates 'PostTag' table, Renaming it to 'PostsTags' is done in ApplicationDbContext
 
 	Because of "message Post" with "repeated Tag tags_data"

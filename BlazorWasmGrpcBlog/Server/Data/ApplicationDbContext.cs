@@ -44,13 +44,13 @@ namespace BlazorWasmGrpcBlog.Server.Data
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 			=> optionsBuilder
-				.LogTo(Console.WriteLine, LogLevel.Information)
-				.EnableSensitiveDataLogging();
+				.LogTo(Console.WriteLine, LogLevel.Information) // LogLevel.Warning for production
+				.EnableSensitiveDataLogging(); // for debugging
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			// From ON.NET Deep Dive in Many to Many Part 2
-			// See:  https://channel9.msdn.com/Shows/On-NET/Deep-Dive-into-Many-to-Many-A-Tour-of-EF-Core-50-pt-2
+			// See: https://channel9.msdn.com/Shows/On-NET/Deep-Dive-into-Many-to-Many-A-Tour-of-EF-Core-50-pt-2
 			modelBuilder
 				.Entity<Post>()
 				.HasMany(e => e.TagsInPostData)
