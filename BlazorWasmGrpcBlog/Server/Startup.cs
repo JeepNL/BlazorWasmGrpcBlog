@@ -45,13 +45,14 @@ namespace BlazorWasmGrpcBlog.Server
 			services.AddGrpc();
 
 			services.AddControllersWithViews();
+
 			services.AddRazorPages();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext ctx)
 		{
-			new SeedData(ctx).BlogSeed();
+			SeedData.BlogSeed(ctx);
 
 			if (env.IsDevelopment())
 			{

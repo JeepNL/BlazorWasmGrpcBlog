@@ -8,15 +8,9 @@ using System.Linq;
 
 namespace BlazorWasmGrpcBlog.Server.Data
 {
-	public class SeedData
+	public static class SeedData
 	{
-		private readonly ApplicationDbContext ctx;
-		public SeedData(ApplicationDbContext dbContext)
-		{
-			ctx = dbContext;
-		}
-
-		public void BlogSeed()
+		public static void BlogSeed(ApplicationDbContext ctx)
 		{
 			// Info
 			// SQLite DB
@@ -28,8 +22,8 @@ namespace BlazorWasmGrpcBlog.Server.Data
 			//		Clear; Add-Migration InitialCreate -OutputDir "Data/Migrations"; Update-Database;
 
 			// Extra for testing only, start with a clean DB.
-			ctx.Database.EnsureDeleted();
-			ctx.Database.Migrate(); // with migrations //ctx.Database.EnsureCreated(); // without migrations
+			// ctx.Database.EnsureDeleted();
+			// ctx.Database.Migrate(); // with migrations //ctx.Database.EnsureCreated(); // without migrations
 
 			if (ctx.Posts.Any())
 			{
@@ -43,9 +37,12 @@ namespace BlazorWasmGrpcBlog.Server.Data
 			var author2 = new Author() { AuthorId = 2, Name = "Author II", DateCreated = utcDate };
 			var author3 = new Author() { AuthorId = 3, Name = "Author III", DateCreated = utcDate };
 
-			var tag1 = new Tag() { TagId = 1, Name = "TagOne" };
-			var tag2 = new Tag() { TagId = 2, Name = "TagTwo" };
-			var tag3 = new Tag() { TagId = 3, Name = "Tagthree" };
+			//var tag1 = new Tag() { TagId = 1, Name = "TagOne" };
+			//var tag2 = new Tag() { TagId = 2, Name = "TagTwo" };
+			//var tag3 = new Tag() { TagId = 3, Name = "Tagthree" };
+			var tag1 = new Tag() { TagId = "TagOne" };
+			var tag2 = new Tag() { TagId = "TagTwo" };
+			var tag3 = new Tag() { TagId = "Tagthree" };
 
 			var post1 = new Post() { PostId = 1, AuthorId = 1, Title = "First Post", DateCreated = utcDate, PostStat = PostStatus.Published };
 			var post2 = new Post() { PostId = 2, AuthorId = 2, Title = "Second Post", DateCreated = utcDate, PostStat = PostStatus.Published };

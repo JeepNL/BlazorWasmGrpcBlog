@@ -103,9 +103,7 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                 name: "Tags",
                 columns: table => new
                 {
-                    TagId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: true)
+                    TagId = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -264,20 +262,20 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                 columns: table => new
                 {
                     PostId = table.Column<int>(type: "INTEGER", nullable: false),
-                    TagId = table.Column<int>(type: "INTEGER", nullable: false)
+                    TagId = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PostsTags", x => new { x.PostId, x.TagId });
                     table.ForeignKey(
-                        name: "FK_PostsTags_Posts_TagId",
-                        column: x => x.TagId,
+                        name: "FK_PostsTags_Posts_PostId",
+                        column: x => x.PostId,
                         principalTable: "Posts",
                         principalColumn: "PostId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PostsTags_Tags_PostId",
-                        column: x => x.PostId,
+                        name: "FK_PostsTags_Tags_TagId",
+                        column: x => x.TagId,
                         principalTable: "Tags",
                         principalColumn: "TagId",
                         onDelete: ReferentialAction.Cascade);

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorWasmGrpcBlog.Server.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210115131923_InitialCreate")]
+    [Migration("20210119153754_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -142,11 +142,7 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
 
             modelBuilder.Entity("BlazorWasmGrpcBlog.Shared.Protos.Tag", b =>
                 {
-                    b.Property<int>("TagId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
+                    b.Property<string>("TagId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("TagId");
@@ -394,8 +390,8 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
                     b.Property<int>("PostId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("TagId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("TagId")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("PostId", "TagId");
 
@@ -477,13 +473,13 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
 
             modelBuilder.Entity("PostsTags", b =>
                 {
-                    b.HasOne("BlazorWasmGrpcBlog.Shared.Protos.Tag", null)
+                    b.HasOne("BlazorWasmGrpcBlog.Shared.Protos.Post", null)
                         .WithMany()
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BlazorWasmGrpcBlog.Shared.Protos.Post", null)
+                    b.HasOne("BlazorWasmGrpcBlog.Shared.Protos.Tag", null)
                         .WithMany()
                         .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade)

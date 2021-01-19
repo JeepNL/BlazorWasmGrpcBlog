@@ -36,18 +36,18 @@ message Posts {
 
 /*
 	Many to Many Tags in auto generated table "PostsTags"
-	EF Core auto generates 'PostTag' table, Renaming it to 'PostsTags' is done in ApplicationDbContext
+	EF Core auto generates 'PostTag' table. Renaming it to 'PostsTags' is done in ApplicationDbContext
 
-	Because of "message Post" with "repeated Tag tags_data"
-	and "message Tag" with "repeated Post posts_data"
+	Because of "message Post" with "repeated Tag tags_in_post_data"
+	and "message Tag" with "repeated Post posts_in_tag_data"
 	EF Core creates "PostTag" table 'automagically'.
 */
 
 message Tag {
-	//string tag_id = 1; // Tag itself: string
-	int32 tag_id = 1;
-	string name = 2;
-	repeated Post posts_in_tag_data = 3; // Tag with many Posts
+	string tag_id = 1; // Tag itself: string
+	//int32 tag_id = 1;
+	//string name = 2;
+	repeated Post posts_in_tag_data = 2; // Tag with many Posts
 }
 message Tags {
 	repeated Tag tags_data = 1;

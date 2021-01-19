@@ -14,6 +14,6 @@ namespace BlazorWasmGrpcBlog.Server.Models
 		public int TagId { get; set; }
 		public Post Post { get; set; }
 		public Tag Tag { get; set; }
-		public DateTimeOffset CreatedUtc { get; set; }
+		//public DateTimeOffset CreatedUtc { get; set; }
 	}
 }
