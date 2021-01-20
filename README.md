@@ -1,7 +1,5 @@
 # Blazor Wasm gRPC Blog Sample
 
-Tip: Watch: On .NET Deep Dive into Many-to-Many: [A Tour of EF Core 5.0 pt. 2](https://channel9.msdn.com/Shows/On-NET/Deep-Dive-into-Many-to-Many-A-Tour-of-EF-Core-50-pt-2)
-
  - **Working** (CTRL-F5) Kestrel Hosted Blazor 5.x WASM Sample Project (with Identity) for gRPC with related (EF Core/SQLite) data. 
 
 Many to many `.Include` results in a stack overflow, is this a reference loop?
@@ -25,6 +23,8 @@ Adding data to join table solved, see: https://github.com/dotnet/efcore/issues/2
 
     modelBuilder.Entity<Post>().Navigation(e => e.TagsInPostData).HasField("tagsInPostData_");
     modelBuilder.Entity<Tag>().Navigation(e => e.PostsInTagData).HasField("postsInTagData_");
+
+Tip: Watch: On .NET Deep Dive into Many-to-Many: [A Tour of EF Core 5.0 pt. 2](https://channel9.msdn.com/Shows/On-NET/Deep-Dive-into-Many-to-Many-A-Tour-of-EF-Core-50-pt-2)
 
 ----
 
