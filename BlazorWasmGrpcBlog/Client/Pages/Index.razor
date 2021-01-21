@@ -15,7 +15,15 @@ else
 {
     foreach (var post in postsLst)
     {
-        <p>@DtUtils.DbUtc2Local(post.DateCreated) - @post.Title by @post.PostAuthor.Name - @DtUtils.ProtoTs2Utc(post.PostExt.Ts)</p>
+        <p>
+            (@post.PostId) @DtUtils.DbUtc2Local(post.DateCreated) - @post.Title by @post.PostAuthor.Name - @DtUtils.ProtoTs2Utc(post.PostExtended.Ts)
+            <br />Tags: @foreach (var t in post.TagsInPostData)
+            {
+                <span>[@t.TagId] </span>
+            }
+            <br />@post.PostExtended.Content
+        </p>
+        <hr />
     }
 }
 

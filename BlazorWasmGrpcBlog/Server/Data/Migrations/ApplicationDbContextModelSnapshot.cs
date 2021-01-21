@@ -412,7 +412,7 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
             modelBuilder.Entity("BlazorWasmGrpcBlog.Shared.Protos.PostExtended", b =>
                 {
                     b.HasOne("BlazorWasmGrpcBlog.Shared.Protos.Post", null)
-                        .WithOne("PostExt")
+                        .WithOne("PostExtended")
                         .HasForeignKey("BlazorWasmGrpcBlog.Shared.Protos.PostExtended", "PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -486,7 +486,7 @@ namespace BlazorWasmGrpcBlog.Server.Data.Migrations
 
             modelBuilder.Entity("BlazorWasmGrpcBlog.Shared.Protos.Post", b =>
                 {
-                    b.Navigation("PostExt");
+                    b.Navigation("PostExtended");
                 });
 #pragma warning restore 612, 618
         }

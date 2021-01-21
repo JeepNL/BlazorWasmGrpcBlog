@@ -22,16 +22,55 @@ namespace BlazorWasmGrpcBlog.Server.Services
 
 		public override async Task<Posts> GetPosts(Empty request, ServerCallContext context)
 		{
-
-			var posts = new Posts();
-			var allPosts = await dbContext.Posts
+			var postsQuery = await dbContext.Posts.AsSplitQuery() // trying/testing ".AsSplitQuery()"
+			//var postsQuery = await dbContext.Posts
 				.Where(ps => ps.PostStat == PostStatus.Published)
 				.Include(pa => pa.PostAuthor)
-				.Include(pe => pe.PostExt)
-				//.Include(tipd => tipd.TagsInPostData) // TODO: [ERROR] / doesn't work: results in a stack overflow.
+				.Include(pe => pe.PostExtended)
+				.Include(tipd => tipd.TagsInPostData)
 				.OrderByDescending(dc => dc.DateCreated)
-				.ToListAsync();
-			posts.PostsData.AddRange(allPosts);
+				.AsNoTracking().ToListAsync();
+
+			// The Protobuf serializer doesn't support reference loops
+			// see: https://github.com/grpc/grpc-dotnet/issues/1177#issuecomment-763910215
+			//var posts = new Posts();
+			//posts.PostsData.AddRange(allPosts); // so this doesn't work
+			//return posts
+
+			var posts = new Posts();
+			foreach (var p in postsQuery)
+			{
+				var post = new Post();
+
+				post.PostId = p.PostId;
+				post.Title = p.Title;
+				post.DateCreated = p.DateCreated;
+				post.PostStat = p.PostStat;
+
+				post.PostAuthor = p.PostAuthor;
+				post.PostExtended = p.PostExtended;
+
+				// Just add all the tags to each post, this isn't a reference loop.
+				foreach (var t in p.TagsInPostData)
+				{
+					var tag = new Tag();
+					tag.TagId = t.TagId;
+					post.TagsInPostData.Add(tag);
+				}
+				posts.PostsData.Add(post);
+			}
+
+			// For debugging
+			//foreach (var p2 in posts.PostsData)
+			//{
+			//	Console.Write($"PostId: {p2.PostId}, Title: {p2.Title}, Author Id: {p2.PostAuthor.AuthorId}");
+			//	foreach (var t in p2.TagsInPostData)
+			//	{
+			//		Console.Write($", [{t.TagId}]");
+			//	}
+			//	Console.Write(Environment.NewLine);
+			//}
+
 			return posts;
 
 			//
@@ -61,7 +100,7 @@ namespace BlazorWasmGrpcBlog.Server.Services
 		{
 			return await dbContext.Posts
 				.Include(pa => pa.PostAuthor)
-				.Include(pe => pe.PostExt)
+				.Include(pe => pe.PostExtended)
 				.SingleOrDefaultAsync(post => post.PostId == request.Id);
 		}
 
@@ -79,6 +118,5 @@ namespace BlazorWasmGrpcBlog.Server.Services
 			return await dbContext.Authors
 				.SingleOrDefaultAsync(author => author.AuthorId == request.Id);
 		}
-
 	}
 }

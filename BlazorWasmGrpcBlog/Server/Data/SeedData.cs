@@ -42,7 +42,7 @@ namespace BlazorWasmGrpcBlog.Server.Data
 			//var tag3 = new Tag() { TagId = 3, Name = "Tagthree" };
 			var tag1 = new Tag() { TagId = "TagOne" };
 			var tag2 = new Tag() { TagId = "TagTwo" };
-			var tag3 = new Tag() { TagId = "Tagthree" };
+			var tag3 = new Tag() { TagId = "TagThree" };
 
 			var post1 = new Post() { PostId = 1, AuthorId = 1, Title = "First Post", DateCreated = utcDate, PostStat = PostStatus.Published };
 			var post2 = new Post() { PostId = 2, AuthorId = 2, Title = "Second Post", DateCreated = utcDate, PostStat = PostStatus.Published };
