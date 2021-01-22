@@ -2,20 +2,7 @@
 
  - **Working** (CTRL-F5) Kestrel Hosted Blazor 5.x WASM Sample Project (with Identity) for gRPC with related (EF Core/SQLite) data. 
 
-Many to many `.Include` results in a stack overflow, is this a reference loop?
-
-(part of) /Server/Services/[BlogService.cs](https://github.com/JeepNL/BlazorWasmGrpcBlog/blob/master/BlazorWasmGrpcBlog/Server/Services/BlogService.cs)
- 
-	var posts = new Posts();
-	var allPosts = await dbContext.Posts
-		.Where(ps => ps.PostStat == PostStatus.Published)
-		.Include(pa => pa.PostAuthor)
-		.Include(pe => pe.PostExt)
-		//.Include(tipd => tipd.TagsInPostData) // TODO: [ERROR] / doesn't work: results in a stack overflow.
-		.OrderByDescending(dc => dc.DateCreated)
-		.ToListAsync();
-	posts.PostsData.AddRange(allPosts);
-	return posts;
+Many-to-Many working now, see: https://github.com/grpc/grpc-dotnet/issues/1177#issuecomment-763910215
 
 Adding data to join table solved, see: https://github.com/dotnet/efcore/issues/23703#issuecomment-758801618
 
