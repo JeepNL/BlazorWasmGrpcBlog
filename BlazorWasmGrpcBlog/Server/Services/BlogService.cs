@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,7 +24,7 @@ namespace BlazorWasmGrpcBlog.Server.Services
 		public override async Task<Posts> GetPosts(Empty request, ServerCallContext context)
 		{
 			var postsQuery = await dbContext.Posts.AsSplitQuery() // trying/testing ".AsSplitQuery()"
-			//var postsQuery = await dbContext.Posts
+																  //var postsQuery = await dbContext.Posts
 				.Where(ps => ps.PostStat == PostStatus.Published)
 				.Include(pa => pa.PostAuthor)
 				.Include(pe => pe.PostExtended)
@@ -37,27 +38,33 @@ namespace BlazorWasmGrpcBlog.Server.Services
 			//posts.PostsData.AddRange(allPosts); // so this doesn't work
 			//return posts
 
-			var posts = new Posts();
+			Posts posts = new();
 			foreach (var p in postsQuery)
 			{
-				var post = new Post();
-
-				post.PostId = p.PostId;
-				post.Title = p.Title;
-				post.DateCreated = p.DateCreated;
-				post.PostStat = p.PostStat;
-
-				post.PostAuthor = p.PostAuthor;
-				post.PostExtended = p.PostExtended;
+				Post post = new()
+				{
+					PostId = p.PostId,
+					Title = p.Title,
+					DateCreated = p.DateCreated,
+					PostStat = p.PostStat,
+					PostAuthor = p.PostAuthor,
+					PostExtended = p.PostExtended,
+				};
 
 				// Just add all the tags to each post, this isn't a reference loop.
-				foreach (var t in p.TagsInPostData)
-				{
-					var tag = new Tag();
-					tag.TagId = t.TagId;
-					post.TagsInPostData.Add(tag);
-				}
+				List<Tag> tags = p.TagsInPostData.Select(t => new Tag { TagId = t.TagId }).ToList();
+				post.TagsInPostData.AddRange(tags);
+
+				// Add Post (now with tags) to posts
 				posts.PostsData.Add(post);
+
+				// OLD: foreach loop for adding tags
+				//foreach (var t in p.TagsInPostData)
+				//{
+				//	var tag = new Tag() { TagId = t.TagId };
+				//	post.TagsInPostData.Add(tag);
+				//}
+
 			}
 
 			// For debugging
